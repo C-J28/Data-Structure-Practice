@@ -37,8 +37,51 @@ Node *addNode(int data) {
 }
 
 // remove a node from the list
+int removeNode(int data) {
+    Node *current = head;
+    Node *prev = head;
+    while (current != NULL) {
+        if (current->data == data){
+            // if current node is list head
+            if (current == head){
+                head = current->next;
+            } else {
+                prev->next = current->next;
+                free(current);
+                current = NULL;
+            }
+
+            return 1;
+        }
+        prev = current;
+        current = current->next;
+    }
+
+    return 0;
+}
 
 // insert a node insto a position in the list
+Node *insertNode(int data, int position) {
+    Node *current = head;
+    while(current != NULL && position != 0){
+        position--;
+    }
+
+    if (position != 0){
+        printf("Requested positions too far into list \n");
+        return NULL;
+    }
+
+    Node *new = malloc(sizeof(Node));
+    if (new == NULL) {
+        return NULL;
+    }
+    new->data = data;
+    new->next = current->next;
+    current->next = new;
+
+    return new;
+}
 
 // print the created list
 void printList() {
@@ -63,6 +106,8 @@ void printMenu() {
 
 int main(int argc, char **argv) {
     int option = -1;
+    int arg1 = 0;
+    int arg2 = 0;
     while (option != 5) {
         printMenu();
         int num_recieved = scanf("%d", &option);
@@ -71,14 +116,28 @@ int main(int argc, char **argv) {
                 case 1:
                     // add operation
                     printf("What data should I insert?: \n");
-                    scanf("%d", &option);
-                    Node *new = addNode(option);
+                    scanf("%d", &arg1);
+                    Node *new = addNode(arg1);
                     break;
                 case 2:
                     // remove operation
+                    printf("What data should I remove?: \n");
+                    scanf("%d", &arg1);
+                    int success = removeNode(arg1);
+                    if (!success){
+                        printf("element not found\n"); 
+                    }
                     break;
                 case 3:
                     // insert operation
+                    printf("What data should I insert?: \n");
+                    scanf("%d", &arg1);
+                    printf("What position?: \n");
+                    scanf("%d", &arg2);
+                    new = insertNode(arg1, arg2);
+                    if (new == NULL){
+                        printf("Failed to insert into list \n");
+                    }
                     break;
                 case 4:
                     // print operation
